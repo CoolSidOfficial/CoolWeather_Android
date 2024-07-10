@@ -1,25 +1,52 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import {  ImageBackground, StyleSheet, Text, View } from 'react-native';
+import React,{useEffect} from 'react';
+import {  ImageBackground, StyleSheet, Text, View,StatusBar } from 'react-native';
 
 export default function App() {
+  const getApiData=async()=>{
+    const w_url=""
+    const api_start=await fetch(w_url)
+    const data=api_start.json()
+  }
+  useEffect(()=>{
+    getApiData()
+  },[])
   return (
-<ImageBackground
-      source={require('./assets/night.jpg')}
-
-      resizeMode="cover" style={styles.back_image}> 
+    <ImageBackground
+    source={require('./assets/day.jpg')}
+    
+    resizeMode="cover" style={styles.back_image}> 
     
    <View style={styles.container}>
+    <StatusBar 
+    backgroundColor={"blue"}
+    barStyle={"light-content"}
+    hidden={false}
+    />  
 
     <View > 
       <Text style={styles.country_name}> India </Text>
     </View>
     <View >
-      <Text style={styles.current_temp}>25°</Text>
+      <Text style={styles.current_temp}>22°</Text>
     </View>
     <View >
       <Text style={styles.c_st}>It's Sunny</Text>
     </View>
+   </View>
+   <View style={styles.extra_d_container}>
+    <Text style={styles.extra_info}>
+      78% {"\n"}Humidity
+
+    </Text>
+    <Text style={styles.extra_info}>
+      22km{"\n"}Visibility
+
+    </Text>
+    <Text style={styles.extra_info}>
+      78% {"\n"}Ui/index
+
+    </Text>
+    
    </View>
     </ImageBackground>
   );
@@ -31,6 +58,7 @@ const styles = StyleSheet.create({
   },
   container:{
    padding:50,
+   flex:1,
    
   },
   country_name: {
@@ -49,4 +77,22 @@ const styles = StyleSheet.create({
    fontSize:30,
    transform: [{rotate:'90deg'}]
   },
+  extra_d_container:{ 
+    marginBottom:84, 
+    borderWidth:4,
+    borderColor: '#ffffff',
+    borderRadius:10,
+    flexDirection:"row",
+   justifyContent:'space-evenly',
+   alignItems:'center',
+  },
+  extra_info:{
+   color:'#ffffff',
+   fontWeight:"bold", 
+    fontSize:16,
+    padding:5,
+
+  },
+
+
 });
