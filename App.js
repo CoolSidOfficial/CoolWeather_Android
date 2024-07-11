@@ -3,9 +3,13 @@ import {  Platform,ImageBackground, StyleSheet, Text, View,StatusBar } from 'rea
 import * as Location from 'expo-location';
 
 export default function App() {
-  const [location,setLocation]=useState(null)
-  const [day, u_day]=useState(null)
+  const [location,setLocation]=useState({coords:{latitude:0,longitude:0}})
+  const [day, u_day]=useState(0)
   const [c_temp,u_temp]=useState(null)
+  const [c_humidity,u_humidity]=useState(null)
+  const [c_wind,u_wind]=useState(null)
+  const [cloud_cover,u_cover]=useState(null)
+  
   async function locationCheck(){
     let sta=await Location.requestForegroundPermissionsAsync()  
     if (sta.status!=="granted"){
@@ -14,22 +18,44 @@ export default function App() {
    
   //////////////////////////////////
    async function getApiData(lat,long){
-    const w_url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current=temperature_2m&current=is_day`
+    const w_url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current=temperature_2m&current=is_day&current=relative_humidity_2m&current=wind_speed_10m&current=cloud_cover`
     const api_start=await fetch(w_url)
-    console.log(api_start)
-    // const data=api_start.json()
-    
+    // console.log( await api_start.json())
+    const data= await api_start.json()
+    u_day(data.current.is_day)
+    u_temp(data.current.temperature_2m)
+    u_wind(data.current.wind_speed_10m)
+    u_cover(data.current.cloud_cover)
+    u_humidity(data.current.relative_humidity_2m)
   }
+  ///////////////////////
+
+  
+    /////////////////////////////////////
   useEffect(()=>{
     locationCheck()
-     async()=>{
-      const current_loc= await Location.getCurrentPositionAsync
+    async function  getLocation(){
+      const current_loc= await Location.getCurrentPositionAsync({})
       setLocation(current_loc)
-      console.log(setLocation)
-    let [extraced_loc,extracted_long]=[location.coords.latitude,location.coords.longitude]
-    console.log(extraced_loc,extracted_long)
-    getApiData(extraced_loc,extracted_long)
-  }
+      try{
+        text = location;
+        // console.log(text)
+        if (!text){
+
+          console.log("nothing is there to show")
+        }
+        // console.log(text.coords.latitude)
+        getApiData(text.coords.latitude,text.coords.longitude)
+      }
+      catch(error){
+        console.log(error)
+      }
+    }  
+    getLocation()
+    
+
+    // console.log(extraced_loc,extracted_long)
+  
 
    
     // getApiData()
@@ -54,20 +80,20 @@ export default function App() {
       <Text style={styles.current_temp}>{c_temp}°</Text>
     </View>
     <View >
-      <Text style={styles.c_st}>{day?"It's Sunny":"It's dark"}</Text>
+      <Text style={styles.c_st}>{day==1?"It's Sunny":"It's dark"}</Text>
     </View>
    </View>
    <View style={styles.extra_d_container}>
     <Text style={styles.extra_info}>
-      78% {"\n"}Humidity
+      {c_humidity}% {"\n"}Humidity
 
     </Text>
     <Text style={styles.extra_info}>
-      22km{"\n"}Visibility
+      {c_wind}%{"\n"}Wind Speed
 
     </Text>
     <Text style={styles.extra_info}>
-      78% {"\n"}Ui/index
+      {cloud_cover}% {"\n"} Cloud Cover
 
     </Text>
     
@@ -81,7 +107,7 @@ const styles = StyleSheet.create({
     flex:1,
   },
   container:{
-   padding:50,
+   padding:40,
    flex:1,
    
   },
@@ -91,7 +117,7 @@ const styles = StyleSheet.create({
   },
   current_temp:{
    color:'#ffffff',
-    fontSize:95,
+    fontSize:80,
   },
   c_st:{
    color:'#ffffff',
@@ -102,7 +128,7 @@ const styles = StyleSheet.create({
    transform: [{rotate:'90deg'}]
   },
   extra_d_container:{ 
-    marginBottom:84, 
+    marginBottom:66, 
     borderWidth:4,
     borderColor: '#ffffff',
     borderRadius:10,
@@ -114,7 +140,7 @@ const styles = StyleSheet.create({
    color:'#ffffff',
    fontWeight:"bold", 
     fontSize:16,
-    padding:5,
+    padding:8,
 
   },
 
