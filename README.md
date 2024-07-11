@@ -4,7 +4,7 @@
 CoolWeather is app which provides you basic weather information using your location , created in react native
 
 # Screenshots
-<img src="https://github.com/CoolSidOfficial/CoolWeather_Android/assets/85258937/ece54e27-9a6f-4668-937d-8ac5dd7bc017" width="600" height="350">
+<img src="https://github.com/CoolSidOfficial/CoolWeather_Android/assets/85258937/ece54e27-9a6f-4668-937d-8ac5dd7bc017" width="500" height="650">
 ![Night](https://github.com/CoolSidOfficial/CoolWeather_Android/assets/85258937/e853d332-941a-4058-bfb9-be1243b28bb9|width=100)
 
 ##   Download links
