@@ -1,14 +1,38 @@
-import React,{useEffect} from 'react';
-import {  ImageBackground, StyleSheet, Text, View,StatusBar } from 'react-native';
+import React,{useEffect,useState} from 'react';
+import {  Platform,ImageBackground, StyleSheet, Text, View,StatusBar } from 'react-native';
+import * as Location from 'expo-location';
 
 export default function App() {
-  const getApiData=async()=>{
-    const w_url=""
+  const [location,setLocation]=useState(null)
+  const [day, u_day]=useState(null)
+  const [c_temp,u_temp]=useState(null)
+  async function locationCheck(){
+    let sta=await Location.requestForegroundPermissionsAsync()  
+    if (sta.status!=="granted"){
+    console.log("please grant location permission")
+    }}
+   
+  //////////////////////////////////
+   async function getApiData(lat,long){
+    const w_url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current=temperature_2m&current=is_day`
     const api_start=await fetch(w_url)
-    const data=api_start.json()
+    console.log(api_start)
+    // const data=api_start.json()
+    
   }
   useEffect(()=>{
-    getApiData()
+    locationCheck()
+     async()=>{
+      const current_loc= await Location.getCurrentPositionAsync
+      setLocation(current_loc)
+      console.log(setLocation)
+    let [extraced_loc,extracted_long]=[location.coords.latitude,location.coords.longitude]
+    console.log(extraced_loc,extracted_long)
+    getApiData(extraced_loc,extracted_long)
+  }
+
+   
+    // getApiData()
   },[])
   return (
     <ImageBackground
@@ -27,10 +51,10 @@ export default function App() {
       <Text style={styles.country_name}> India </Text>
     </View>
     <View >
-      <Text style={styles.current_temp}>22°</Text>
+      <Text style={styles.current_temp}>{c_temp}°</Text>
     </View>
     <View >
-      <Text style={styles.c_st}>It's Sunny</Text>
+      <Text style={styles.c_st}>{day?"It's Sunny":"It's dark"}</Text>
     </View>
    </View>
    <View style={styles.extra_d_container}>
