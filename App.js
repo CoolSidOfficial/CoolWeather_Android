@@ -1,8 +1,10 @@
 import React,{useEffect,useState} from 'react';
-import {  Platform,ImageBackground, StyleSheet, Text, View,StatusBar } from 'react-native';
+import {  ActivityIndicator,Platform,ImageBackground, StyleSheet, Text, View,StatusBar } from 'react-native';
 import * as Location from 'expo-location';
 
 export default function App() {
+  const [hasPermission, setHasPermission] = useState(false);
+  const [loaded,hasloaded]=useState(true)
   const [location,setLocation]=useState({coords:{latitude:0,longitude:0}})
   const [day, u_day]=useState(0)
   const [c_temp,u_temp]=useState(null)
@@ -11,10 +13,12 @@ export default function App() {
   const [cloud_cover,u_cover]=useState(null)
   
   async function locationCheck(){
-    let sta=await Location.requestForegroundPermissionsAsync()  
+    let sta=await Location.requestForegroundPermissionsAsync()
     if (sta.status!=="granted"){
-    console.log("please grant location permission")
-    }}
+      console.log("please grant location permission")
+    }
+    setHasPermission(true)  
+  }
    
   //////////////////////////////////
    async function getApiData(lat,long){
@@ -27,6 +31,7 @@ export default function App() {
     u_wind(data.current.wind_speed_10m)
     u_cover(data.current.cloud_cover)
     u_humidity(data.current.relative_humidity_2m)
+    console.log(data.current) 
   }
   ///////////////////////
 
@@ -34,11 +39,12 @@ export default function App() {
     /////////////////////////////////////
   useEffect(()=>{
     locationCheck()
+
     async function  getLocation(){
       const current_loc= await Location.getCurrentPositionAsync({})
-      setLocation(current_loc)
+      setLocation(await current_loc)
       try{
-        text = location;
+        text = await location;
         // console.log(text)
         if (!text){
 
@@ -54,78 +60,94 @@ export default function App() {
     getLocation()
     
 
-    // console.log(extraced_loc,extracted_long)
   
-
+  hasloaded(false)
    
-    // getApiData()
-  },[])
+  },[hasPermission])
   return (
-    <ImageBackground
-    source={require('./assets/day.jpg')}
     
-    resizeMode="cover" style={styles.back_image}> 
-    
-   <View style={styles.container}>
-    <StatusBar 
-    backgroundColor={"blue"}
-    barStyle={"light-content"}
-    hidden={false}
-    />  
 
-    <View > 
+    
+    <ImageBackground
+      source={require('./assets/day.jpg')}
+      resizeMode="cover" style={styles.back_image} > 
+      
+    <View style={styles.container}> 
+      <StatusBar 
+      backgroundColor={"blue"}
+      barStyle={"light-content"}
+      hidden={false}
+      />  
+      
+      <View > 
       <Text style={styles.country_name}> India </Text>
-    </View>
-    <View >
+      </View>
+      <View >
       <Text style={styles.current_temp}>{c_temp}°</Text>
-    </View>
-    <View >
+      </View>
+      <View >
       <Text style={styles.c_st}>{day==1?"It's Sunny":"It's dark"}</Text>
     </View>
    </View>
    <View style={styles.extra_d_container}>
-    <Text style={styles.extra_info}>
-      {c_humidity}% {"\n"}Humidity
-
-    </Text>
-    <Text style={styles.extra_info}>
-      {c_wind}%{"\n"}Wind Speed
-
-    </Text>
-    <Text style={styles.extra_info}>
-      {cloud_cover}% {"\n"} Cloud Cover
-
-    </Text>
-    
+   <Text style={styles.extra_info}>
+   {c_humidity}% {"\n"}Humidity
+   
+   </Text>
+   <Text style={styles.extra_info}>
+   {c_wind}%{"\n"}Wind Speed
+   
+   </Text>
+   <Text style={styles.extra_info}>
+   {cloud_cover}% {"\n"} Cloud Cover
+   
+   </Text>
+   
    </View>
     </ImageBackground>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const styles = StyleSheet.create({
   back_image:{
     flex:1,
   },
   container:{
-   padding:40,
-   flex:1,
-   
+    padding:40,
+    flex:1,
+    
   },
   country_name: {
-   color:'#ffffff',
-   fontSize:30,
+    color:'#ffffff',
+    fontSize:30,
   },
   current_temp:{
-   color:'#ffffff',
+    color:'#ffffff',
     fontSize:80,
   },
   c_st:{
-   color:'#ffffff',
-   fontWeight:'bold',
-   padding:40,
-   marginRight:-250,
-   fontSize:30,
-   transform: [{rotate:'90deg'}]
+    color:'#ffffff',
+    fontWeight:'bold',
+    padding:40,
+    marginRight:-250,
+    fontSize:30,
+    transform: [{rotate:'90deg'}]
   },
   extra_d_container:{ 
     marginBottom:66, 
