@@ -1,0 +1,14 @@
+
+# CoolWeather Mobile APP
+
+CoolWeather is app which provides you basic weather information using your location , created in react native
+
+
+##   Download links
+## [Android](https://expo.dev/accounts/coolsidofficial/projects/CoolWeather/builds/29da41f1-5d45-4ce8-87da-23d37b7502d3)
+
+
+## [IOS]()
+
+
+NOTE: DUE TO FREE API ,TIMMING ARE SET TO CURRENT DAY NOT MINUTES 
