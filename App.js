@@ -69,7 +69,7 @@ export default function App() {
 
     
     <ImageBackground
-      source={require('./assets/day.jpg')}
+      source={day==1 ?require('./assets/day.jpg'):require('./assets/night.jpg')}
       resizeMode="cover" style={styles.back_image} > 
       
     <View style={styles.container}> 
